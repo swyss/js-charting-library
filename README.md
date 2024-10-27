@@ -910,4 +910,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Inspired by various open-source charting libraries.
 - Thanks to contributors and the developer community for their support and feedback.
-
