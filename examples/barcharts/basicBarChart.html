@@ -1,0 +1,38 @@
+<!-- examples/barchart/basicBarChart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Basic Bar Chart Example</title>
+    <style>
+        #chartContainer {
+            width: 600px;
+            height: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<h2>Basic Bar Chart</h2>
+<div id="chartContainer"></div>
+<script type="module">
+    import ChartLibrary from '../../src/index.js';
+
+    const data = [12, 19, 3, 5, 2, 3];
+
+    const chart = new ChartLibrary({
+        elementId: 'chartContainer',
+        data: data,
+        type: 'bar',
+        options: {
+            barColor: '#28a745',
+            hoverColor: '#dc3545',
+            gridColor: '#f8f9fa',
+            axisColor: '#343a40',
+            labelFont: '14px Arial',
+            labelColor: '#343a40',
+        },
+    });
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 // src/index.js
 
 import LineChart from './charts/lineChart.js';
+import BarChart from './charts/barChart.js'; // Import the BarChart class
 
 // Import other chart types as needed
 
@@ -16,7 +17,7 @@ class ChartLibrary {
         if (type === 'line') {
             this.chartInstance = new LineChart(config.elementId, config.data, config.options);
         } else if (type === 'bar') {
-            // Initialize bar chart
+            this.chartInstance = new BarChart(config.elementId, config.data, config.options); // Initialize BarChart
         } else {
             console.error(`Chart type "${type}" is not supported.`);
         }

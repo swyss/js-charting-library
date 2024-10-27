@@ -1,6 +1,6 @@
-// src/charts/lineChart.js
+// src/charts/barChart.js
 
-export default class LineChart {
+export default class BarChart {
     constructor(elementId, data, options = {}) {
         this.elementId = elementId;
         this.data = data;
@@ -91,8 +91,8 @@ export default class LineChart {
     calculateScales() {
         // Determine the data range
         this.xMin = 0;
-        this.xMax = this.data.length - 1;
-        this.yMin = Math.min(...this.data);
+        this.xMax = this.data.length;
+        this.yMin = 0; // Start from zero for bar charts
         this.yMax = Math.max(...this.data);
 
         // Prevent division by zero
@@ -115,7 +115,7 @@ export default class LineChart {
         // Draw chart components
         this.drawAxes();
         this.drawGridlines();
-        this.drawLine();
+        this.drawBars();
     }
 
     /**
@@ -135,21 +135,6 @@ export default class LineChart {
         ctx.strokeStyle = this.options.axisColor || '#000';
         ctx.lineWidth = 1;
 
-        // Draw axis lines
-        this.drawAxisLines(ctx);
-
-        // Draw ticks and labels
-        this.drawXTicksAndLabels(ctx);
-        this.drawYTicksAndLabels(ctx);
-
-        ctx.restore();
-    }
-
-    /**
-     * Draws the x-axis and y-axis lines.
-     * @param {CanvasRenderingContext2D} ctx - The canvas context.
-     */
-    drawAxisLines(ctx) {
         // Draw x-axis
         ctx.beginPath();
         ctx.moveTo(0, this.height);
@@ -161,37 +146,24 @@ export default class LineChart {
         ctx.moveTo(0, this.height);
         ctx.lineTo(0, 0);
         ctx.stroke();
-    }
 
-    /**
-     * Draws x-axis ticks and labels.
-     * @param {CanvasRenderingContext2D} ctx - The canvas context.
-     */
-    drawXTicksAndLabels(ctx) {
+        // Draw x-axis ticks and labels
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         ctx.font = this.options.labelFont || '12px Arial';
         ctx.fillStyle = this.options.labelColor || '#000';
 
-        const numXTicks = this.data.length;
-        const xTickInterval = Math.max(1, Math.floor(numXTicks / 10)); // Limit to 10 labels
-
-        for (let i = 0; i <= this.xMax; i += xTickInterval) {
-            const x = (i - this.xMin) * this.xScale;
+        for (let i = 0; i < this.data.length; i++) {
+            const x = (i + 0.5) * this.xScale;
             ctx.beginPath();
             ctx.moveTo(x, this.height);
             ctx.lineTo(x, this.height + 5);
             ctx.stroke();
             // Label
-            ctx.fillText(i, x, this.height + 8);
+            ctx.fillText(i + 1, x, this.height + 8);
         }
-    }
 
-    /**
-     * Draws y-axis ticks and labels.
-     * @param {CanvasRenderingContext2D} ctx - The canvas context.
-     */
-    drawYTicksAndLabels(ctx) {
+        // Draw y-axis ticks and labels
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
 
@@ -207,6 +179,8 @@ export default class LineChart {
             // Label
             ctx.fillText(value.toFixed(2), -10, y);
         }
+
+        ctx.restore();
     }
 
     /**
@@ -219,34 +193,16 @@ export default class LineChart {
         ctx.strokeStyle = this.options.gridColor || '#e0e0e0';
         ctx.lineWidth = 0.5;
 
-        this.drawVerticalGridlines(ctx);
-        this.drawHorizontalGridlines(ctx);
-
-        ctx.restore();
-    }
-
-    /**
-     * Draws vertical gridlines.
-     * @param {CanvasRenderingContext2D} ctx - The canvas context.
-     */
-    drawVerticalGridlines(ctx) {
-        const numXTicks = this.data.length;
-        const xTickInterval = Math.max(1, Math.floor(numXTicks / 10)); // Limit to 10 gridlines
-
-        for (let i = 0; i <= this.xMax; i += xTickInterval) {
-            const x = (i - this.xMin) * this.xScale;
+        // Vertical gridlines
+        for (let i = 0; i <= this.data.length; i++) {
+            const x = i * this.xScale;
             ctx.beginPath();
             ctx.moveTo(x, 0);
             ctx.lineTo(x, this.height);
             ctx.stroke();
         }
-    }
 
-    /**
-     * Draws horizontal gridlines.
-     * @param {CanvasRenderingContext2D} ctx - The canvas context.
-     */
-    drawHorizontalGridlines(ctx) {
+        // Horizontal gridlines
         const numYTicks = 5;
         for (let i = 0; i <= numYTicks; i++) {
             const y = this.height - (i * this.height) / numYTicks;
@@ -255,77 +211,31 @@ export default class LineChart {
             ctx.lineTo(this.width, y);
             ctx.stroke();
         }
-    }
-
-    /**
-     * Draws the line representing the data and data point markers.
-     */
-    drawLine() {
-        const ctx = this.ctx;
-        ctx.save();
-        ctx.translate(this.margin, this.margin);
-
-        // Draw the line
-        this.drawDataLine(ctx);
-
-        // Draw data points
-        this.drawDataPoints(ctx);
 
         ctx.restore();
     }
 
     /**
-     * Draws the data line connecting data points.
-     * @param {CanvasRenderingContext2D} ctx - The canvas context.
+     * Draws the bars representing the data.
      */
-    drawDataLine(ctx) {
-        ctx.beginPath();
-        for (let i = 0; i < this.data.length; i++) {
-            const {x, y} = this.getCanvasCoordinates(i, this.data[i]);
+    drawBars() {
+        const ctx = this.ctx;
+        ctx.save();
+        ctx.translate(this.margin, this.margin);
 
-            if (i === 0) {
-                ctx.moveTo(x, y);
-            } else {
-                ctx.lineTo(x, y);
-            }
-        }
-        ctx.strokeStyle = this.options.lineColor || '#000';
-        ctx.lineWidth = this.options.lineWidth || 2;
-        ctx.stroke();
-    }
-
-    /**
-     * Draws markers at each data point.
-     * @param {CanvasRenderingContext2D} ctx - The canvas context.
-     */
-    drawDataPoints(ctx) {
-        ctx.fillStyle = this.options.pointColor || '#000';
+        const barWidth = this.xScale * 0.8; // 80% of the xScale
+        const barColor = this.options.barColor || '#007bff';
 
         for (let i = 0; i < this.data.length; i++) {
-            const {x, y} = this.getCanvasCoordinates(i, this.data[i]);
+            const x = i * this.xScale + (this.xScale - barWidth) / 2;
+            const y = this.height - (this.data[i] - this.yMin) * this.yScale;
+            const height = (this.data[i] - this.yMin) * this.yScale;
 
-            ctx.beginPath();
-            ctx.arc(
-                x,
-                y,
-                this.options.pointRadius || 3,
-                0,
-                2 * Math.PI
-            );
-            ctx.fill();
+            ctx.fillStyle = barColor;
+            ctx.fillRect(x, y, barWidth, height);
         }
-    }
 
-    /**
-     * Converts data coordinates to canvas coordinates.
-     * @param {number} index - The index of the data point.
-     * @param {number} value - The value of the data point.
-     * @returns {{x: number, y: number}} The canvas coordinates.
-     */
-    getCanvasCoordinates(index, value) {
-        const x = (index - this.xMin) * this.xScale;
-        const y = this.height - (value - this.yMin) * this.yScale;
-        return {x, y};
+        ctx.restore();
     }
 
     /**
@@ -347,16 +257,16 @@ export default class LineChart {
         const x = mousePos.x - this.margin;
         const y = mousePos.y - this.margin;
 
-        // Find the closest data point
-        const closestIndex = this.findClosestDataPoint(x, y);
+        // Find the bar under the cursor
+        const barIndex = this.getBarIndexAtPosition(x, y);
 
-        if (closestIndex !== null) {
+        if (barIndex !== null) {
             // Avoid unnecessary redraws
-            if (this.highlightedIndex !== closestIndex) {
-                this.highlightedIndex = closestIndex;
+            if (this.highlightedIndex !== barIndex) {
+                this.highlightedIndex = barIndex;
                 this.drawChart(); // Redraw to clear previous highlights
-                this.highlightPoint(closestIndex);
-                this.showTooltip(closestIndex, mousePos.x, mousePos.y);
+                this.highlightBar(barIndex);
+                this.showTooltip(barIndex, mousePos.x, mousePos.y);
             }
         } else {
             if (this.highlightedIndex !== null) {
@@ -392,49 +302,48 @@ export default class LineChart {
     }
 
     /**
-     * Finds the closest data point to the given coordinates.
+     * Finds the index of the bar at the given position.
      * @param {number} x - The x-coordinate on the canvas.
      * @param {number} y - The y-coordinate on the canvas.
-     * @returns {number|null} The index of the closest data point or null if none are close.
+     * @returns {number|null} The index of the bar or null if none.
      */
-    findClosestDataPoint(x, y) {
-        let closestIndex = null;
-        let minDistance = Infinity;
+    getBarIndexAtPosition(x, y) {
+        const barWidth = this.xScale * 0.8;
 
         for (let i = 0; i < this.data.length; i++) {
-            const {x: dataX, y: dataY} = this.getCanvasCoordinates(i, this.data[i]);
+            const barX = i * this.xScale + (this.xScale - barWidth) / 2;
+            const barY = this.height - (this.data[i] - this.yMin) * this.yScale;
+            const barHeight = (this.data[i] - this.yMin) * this.yScale;
 
-            const distance = Math.hypot(dataX - x, dataY - y);
-            if (distance < minDistance && distance < 10) { // 10 pixels threshold
-                minDistance = distance;
-                closestIndex = i;
+            if (
+                x >= barX &&
+                x <= barX + barWidth &&
+                y >= barY &&
+                y <= barY + barHeight
+            ) {
+                return i;
             }
         }
 
-        return closestIndex;
+        return null;
     }
 
     /**
-     * Highlights a data point on the chart.
-     * @param {number} index - The index of the data point to highlight.
+     * Highlights a bar on the chart.
+     * @param {number} index - The index of the bar to highlight.
      */
-    highlightPoint(index) {
+    highlightBar(index) {
         const ctx = this.ctx;
         ctx.save();
         ctx.translate(this.margin, this.margin);
 
-        const {x, y} = this.getCanvasCoordinates(index, this.data[index]);
+        const barWidth = this.xScale * 0.8;
+        const x = index * this.xScale + (this.xScale - barWidth) / 2;
+        const y = this.height - (this.data[index] - this.yMin) * this.yScale;
+        const height = (this.data[index] - this.yMin) * this.yScale;
 
-        ctx.beginPath();
-        ctx.arc(
-            x,
-            y,
-            (this.options.pointRadius || 3) + 2, // Slightly larger radius
-            0,
-            2 * Math.PI
-        );
         ctx.fillStyle = this.options.hoverColor || '#ff0';
-        ctx.fill();
+        ctx.fillRect(x, y, barWidth, height);
 
         ctx.restore();
     }
@@ -460,7 +369,7 @@ export default class LineChart {
         }
 
         // Update tooltip content and position
-        this.tooltip.innerHTML = `x: ${index}, y: ${this.data[index]}`;
+        this.tooltip.innerHTML = `Value: ${this.data[index]}`;
         this.tooltip.style.left = `${x + 15}px`;
         this.tooltip.style.top = `${y + 15}px`;
         this.tooltip.style.opacity = 1;

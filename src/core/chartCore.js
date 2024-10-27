@@ -1,8 +1,9 @@
 // src/core/chartCore.js
 
 import LineChart from '../charts/lineChart.js';
+import BarChart from '../charts/barChart.js';
 
-// Import other chart types as needed, e.g., BarChart
+// Import other chart types as needed
 
 class ChartCore {
     constructor(config) {
@@ -20,8 +21,7 @@ class ChartCore {
         if (type === 'line') {
             this.chartInstance = new LineChart(elementId, data, options);
         } else if (type === 'bar') {
-            // Initialize bar chart
-            // this.chartInstance = new BarChart(elementId, data, options);
+            this.chartInstance = new BarChart(elementId, data, options);
         } else {
             console.error(`Chart type "${type}" is not supported.`);
         }

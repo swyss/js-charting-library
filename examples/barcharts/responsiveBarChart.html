@@ -1,0 +1,49 @@
+<!-- examples/barchart/responsiveBarChart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Responsive Bar Chart Example</title>
+    <style>
+        #chartContainer {
+            width: 80%;
+            height: 400px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            resize: both;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+<h2>Responsive Bar Chart</h2>
+<p>Resize the container to see the chart adjust its size.</p>
+<div id="chartContainer"></div>
+<script type="module">
+    import ChartLibrary from '../../src/index.js';
+
+    const data = [10, 20, 30, 40, 50];
+
+    const chart = new ChartLibrary({
+        elementId: 'chartContainer',
+        data: data,
+        type: 'bar',
+        options: {
+            barColor: '#007bff',
+            hoverColor: '#ffc107',
+            gridColor: '#e0e0e0',
+            axisColor: '#000000',
+            labelFont: '12px Arial',
+            labelColor: '#000000',
+        },
+    });
+
+    // Observe container resize and adjust chart
+    const container = document.getElementById('chartContainer');
+    const resizeObserver = new ResizeObserver(() => {
+        chart.resize();
+    });
+    resizeObserver.observe(container);
+</script>
+</body>
+</html>

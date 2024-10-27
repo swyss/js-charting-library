@@ -1,0 +1,136 @@
+<!-- examples/barchart/interactiveBarChart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Bar Chart Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #chartContainer {
+            width: 600px;
+            height: 400px;
+            margin: 0 auto;
+        }
+
+        #controls {
+            width: 600px;
+            margin: 20px auto;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            flex: 1 1 200px;
+            margin: 10px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .control-group input {
+            width: 100%;
+        }
+
+        #updateDataButton {
+            margin: 20px auto;
+            display: block;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<h2>Interactive Bar Chart</h2>
+<div id="chartContainer"></div>
+<div id="controls">
+    <!-- Bar Styling -->
+    <div class="control-group">
+        <label for="barColor">Bar Color</label>
+        <input id="barColor" type="color" value="#007bff">
+    </div>
+    <div class="control-group">
+        <label for="hoverColor">Hover Color</label>
+        <input id="hoverColor" type="color" value="#ffc107">
+    </div>
+    <!-- Grid and Axis Styling -->
+    <div class="control-group">
+        <label for="gridColor">Grid Color</label>
+        <input id="gridColor" type="color" value="#e0e0e0">
+    </div>
+    <div class="control-group">
+        <label for="axisColor">Axis Color</label>
+        <input id="axisColor" type="color" value="#000000">
+    </div>
+    <!-- Label Styling -->
+    <div class="control-group">
+        <label for="labelFont">Label Font</label>
+        <input id="labelFont" type="text" value="12px Arial">
+    </div>
+    <div class="control-group">
+        <label for="labelColor">Label Color</label>
+        <input id="labelColor" type="color" value="#000000">
+    </div>
+    <!-- Margin -->
+    <div class="control-group">
+        <label for="margin">Margin</label>
+        <input id="margin" max="100" min="0" type="number" value="50">
+    </div>
+    <!-- Data Update -->
+    <div class="control-group">
+        <label for="dataPoints">Data Points (comma-separated)</label>
+        <input id="dataPoints" type="text" value="10,20,30,40,50">
+    </div>
+</div>
+<button id="updateDataButton">Update Data</button>
+<script type="module">
+    import ChartLibrary from '../../src/index.js';
+
+    let data = [10, 20, 30, 40, 50];
+
+    const chart = new ChartLibrary({
+        elementId: 'chartContainer',
+        data: data,
+        type: 'bar',
+        options: getOptions(),
+    });
+
+    // Function to get options from form inputs
+    function getOptions() {
+        return {
+            barColor: document.getElementById('barColor').value,
+            hoverColor: document.getElementById('hoverColor').value,
+            gridColor: document.getElementById('gridColor').value,
+            axisColor: document.getElementById('axisColor').value,
+            labelFont: document.getElementById('labelFont').value,
+            labelColor: document.getElementById('labelColor').value,
+            margin: parseInt(document.getElementById('margin').value) || 50,
+        };
+    }
+
+    // Function to update chart options
+    function updateChartOptions() {
+        chart.updateOptions(getOptions());
+    }
+
+    // Add event listeners to inputs to update the chart on change
+    const inputs = document.querySelectorAll('#controls input');
+    inputs.forEach((input) => {
+        input.addEventListener('input', () => {
+            updateChartOptions();
+        });
+    });
+
+    // Update data when the button is clicked
+    document.getElementById('updateDataButton').addEventListener('click', () => {
+        const dataPoints = document.getElementById('dataPoints').value;
+        data = dataPoints.split(',').map(Number);
+        chart.updateData(data);
+    });
+</script>
+</body>
+</html>
