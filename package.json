@@ -11,8 +11,23 @@
   "scripts": {
     "build": "babel src --out-dir dist",
     "test": "jest",
-    "lint": "eslint src/**",
-    "start": "npm run build && start examples/index.html"
+    "start": "npm run build && start examples/index.html",
+    "prepare": "husky",
+    "lint": "eslint src/ tests/",
+    "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\"",
+    "lint-staged": "lint-staged"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -39,9 +54,14 @@
     "babel-jest": "^29.7.0",
     "canvas": "^2.11.2",
     "eslint": "^9.13.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jest": "^28.8.3",
+    "eslint-plugin-prettier": "^5.2.1",
     "globals": "^15.11.0",
+    "husky": "^9.1.6",
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3"
   }
 }
