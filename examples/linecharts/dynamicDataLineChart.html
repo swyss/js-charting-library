@@ -1,0 +1,44 @@
+<!-- examples/linechart/dynamicDataLineChart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Data Line Chart Example</title>
+    <style>
+        #chartContainer {
+            width: 600px;
+            height: 400px;
+            margin: 0 auto;
+        }
+
+        #updateDataButton {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<h2>Dynamic Data Line Chart</h2>
+<div id="chartContainer"></div>
+<button id="updateDataButton">Update Data</button>
+<script type="module">
+    import ChartLibrary from '../../src/index.js';
+
+    let data = [10, 20, 30, 40, 50];
+
+    const chart = new ChartLibrary({
+        elementId: 'chartContainer',
+        data: data,
+        type: 'line',
+    });
+
+    document.getElementById('updateDataButton').addEventListener('click', () => {
+        // Generate new random data
+        data = data.map((value) => value + Math.floor(Math.random() * 20 - 10));
+        chart.updateData(data);
+    });
+</script>
+</body>
+</html>

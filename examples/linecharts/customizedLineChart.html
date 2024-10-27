@@ -1,0 +1,42 @@
+<!-- examples/linechart/customizedLineChart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customized Line Chart Example</title>
+    <style>
+        #chartContainer {
+            width: 700px;
+            height: 450px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<h2>Customized Line Chart</h2>
+<div id="chartContainer"></div>
+<script type="module">
+    import ChartLibrary from '../../src/index.js';
+
+    const data = [5, 15, 10, 20, 25, 18];
+
+    const chart = new ChartLibrary({
+        elementId: 'chartContainer',
+        data: data,
+        type: 'line',
+        options: {
+            margin: 60,
+            lineColor: '#6f42c1',
+            lineWidth: 3,
+            pointColor: '#6f42c1',
+            pointRadius: 5,
+            hoverColor: '#fd7e14',
+            gridColor: '#f8f9fa',
+            axisColor: '#343a40',
+            labelFont: '14px Verdana',
+            labelColor: '#343a40',
+        },
+    });
+</script>
+</body>
+</html>

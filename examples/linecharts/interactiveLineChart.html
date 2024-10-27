@@ -1,0 +1,153 @@
+<!-- examples/linechart/interactiveLineChart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Line Chart Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #chartContainer {
+            width: 600px;
+            height: 400px;
+            margin: 0 auto;
+        }
+
+        #controls {
+            width: 600px;
+            margin: 20px auto;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            flex: 1 1 200px;
+            margin: 10px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .control-group input {
+            width: 100%;
+        }
+
+        #updateDataButton {
+            margin: 20px auto;
+            display: block;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<h2>Interactive Line Chart</h2>
+<div id="chartContainer"></div>
+<div id="controls">
+    <!-- Line Styling -->
+    <div class="control-group">
+        <label for="lineColor">Line Color</label>
+        <input id="lineColor" type="color" value="#007bff">
+    </div>
+    <div class="control-group">
+        <label for="lineWidth">Line Width</label>
+        <input id="lineWidth" max="10" min="1" type="number" value="2">
+    </div>
+    <!-- Point Styling -->
+    <div class="control-group">
+        <label for="pointColor">Point Color</label>
+        <input id="pointColor" type="color" value="#007bff">
+    </div>
+    <div class="control-group">
+        <label for="pointRadius">Point Radius</label>
+        <input id="pointRadius" max="10" min="1" type="number" value="4">
+    </div>
+    <!-- Hover Styling -->
+    <div class="control-group">
+        <label for="hoverColor">Hover Color</label>
+        <input id="hoverColor" type="color" value="#ff0000">
+    </div>
+    <!-- Grid and Axis Styling -->
+    <div class="control-group">
+        <label for="gridColor">Grid Color</label>
+        <input id="gridColor" type="color" value="#e0e0e0">
+    </div>
+    <div class="control-group">
+        <label for="axisColor">Axis Color</label>
+        <input id="axisColor" type="color" value="#333333">
+    </div>
+    <!-- Label Styling -->
+    <div class="control-group">
+        <label for="labelFont">Label Font</label>
+        <input id="labelFont" type="text" value="12px Arial">
+    </div>
+    <div class="control-group">
+        <label for="labelColor">Label Color</label>
+        <input id="labelColor" type="color" value="#333333">
+    </div>
+    <!-- Margin -->
+    <div class="control-group">
+        <label for="margin">Margin</label>
+        <input id="margin" max="100" min="0" type="number" value="50">
+    </div>
+    <!-- Data Update -->
+    <div class="control-group">
+        <label for="dataPoints">Data Points (comma-separated)</label>
+        <input id="dataPoints" type="text" value="10,20,15,30,25">
+    </div>
+</div>
+<button id="updateDataButton">Update Data</button>
+<script type="module">
+    import ChartLibrary from '../../src/index.js';
+
+    let data = [10, 20, 15, 30, 25];
+
+    const chart = new ChartLibrary({
+        elementId: 'chartContainer',
+        data: data,
+        type: 'line',
+        options: getOptions(),
+    });
+
+    // Function to get options from form inputs
+    function getOptions() {
+        return {
+            lineColor: document.getElementById('lineColor').value,
+            lineWidth: parseInt(document.getElementById('lineWidth').value) || 2,
+            pointColor: document.getElementById('pointColor').value,
+            pointRadius: parseInt(document.getElementById('pointRadius').value) || 3,
+            hoverColor: document.getElementById('hoverColor').value,
+            gridColor: document.getElementById('gridColor').value,
+            axisColor: document.getElementById('axisColor').value,
+            labelFont: document.getElementById('labelFont').value,
+            labelColor: document.getElementById('labelColor').value,
+            margin: parseInt(document.getElementById('margin').value) || 50,
+        };
+    }
+
+    // Function to update chart options
+    function updateChartOptions() {
+        chart.chartInstance.updateOptions(getOptions());
+    }
+
+    // Add event listeners to inputs to update the chart on change
+    const inputs = document.querySelectorAll('#controls input');
+    inputs.forEach((input) => {
+        input.addEventListener('input', () => {
+            updateChartOptions();
+        });
+    });
+
+    // Update data when the button is clicked
+    document.getElementById('updateDataButton').addEventListener('click', () => {
+        const dataPoints = document.getElementById('dataPoints').value;
+        data = dataPoints.split(',').map(Number);
+        chart.updateData(data);
+    });
+</script>
+</body>
+</html>

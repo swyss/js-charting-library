@@ -1,0 +1,50 @@
+<!-- examples/linechart/responsiveLineChart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Responsive Line Chart Example</title>
+    <style>
+        #chartContainer {
+            width: 80%;
+            height: 400px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            resize: both;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+<h2>Responsive Line Chart</h2>
+<p>Resize the container to see the chart adjust.</p>
+<div id="chartContainer"></div>
+<script type="module">
+    import ChartLibrary from '../../src/index.js';
+
+    const data = [15, 25, 35, 45, 55];
+
+    const chart = new ChartLibrary({
+        elementId: 'chartContainer',
+        data: data,
+        type: 'line',
+    });
+
+    // Implement a resize observer to update the chart size
+    const resizeObserver = new ResizeObserver(() => {
+        // Update canvas size
+        chart.canvas.width = chart.canvas.parentElement.offsetWidth;
+        chart.canvas.height = chart.canvas.parentElement.offsetHeight;
+
+        // Recalculate dimensions and scales
+        chart.setDimensions();
+        chart.calculateScales();
+
+        // Redraw the chart
+        chart.drawChart();
+    });
+
+    resizeObserver.observe(document.getElementById('chartContainer'));
+</script>
+</body>
+</html>

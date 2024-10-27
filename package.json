@@ -1,0 +1,46 @@
+{
+  "name": "chart-lib",
+  "version": "1.0.0",
+  "description": "A customizable JavaScript charting library.",
+  "main": "src/index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "babel src --out-dir dist",
+    "test": "jest",
+    "lint": "eslint src/**",
+    "start": "npm run build && start examples/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swyss/js-charting-library.git"
+  },
+  "keywords": [
+    "chart",
+    "javascript",
+    "library",
+    "data",
+    "visualization"
+  ],
+  "author": "swyss",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/swyss/js-charting-library/issues"
+  },
+  "homepage": "https://github.com/swyss/js-charting-library#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.25.9",
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@eslint/js": "^9.13.0",
+    "babel-jest": "^29.7.0",
+    "canvas": "^2.11.2",
+    "eslint": "^9.13.0",
+    "globals": "^15.11.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  }
+}

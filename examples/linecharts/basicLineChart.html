@@ -1,0 +1,30 @@
+<!-- examples/linechart/basicLineChart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Basic Line Chart Example</title>
+    <style>
+        #chartContainer {
+            width: 600px;
+            height: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<h2>Basic Line Chart</h2>
+<div id="chartContainer"></div>
+<script type="module">
+    import ChartLibrary from '../../src/index.js';
+
+    const data = [12, 19, 3, 5, 2, 3];
+
+    const chart = new ChartLibrary({
+        elementId: 'chartContainer',
+        data: data,
+        type: 'line',
+    });
+</script>
+</body>
+</html>
